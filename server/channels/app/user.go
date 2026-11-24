@@ -1697,6 +1697,22 @@ func (a *App) UpdateUser(rctx request.CTX, user *model.User, sendNotifications b
 	return newUser, nil
 }
 
+func (a *App) GetScheduledLeave(rctx request.CTX, userID string) (*model.ScheduledLeave, *model.AppError) {
+	return nil, model.NewAppError("GetScheduledLeave", "not_implemented", nil, "", http.StatusNotImplemented)
+}
+
+func (a *App) SetScheduledLeave(rctx request.CTX, userID string, leave *model.ScheduledLeave) (*model.ScheduledLeave, *model.AppError) {
+	return nil, model.NewAppError("SetScheduledLeave", "not_implemented", nil, "", http.StatusNotImplemented)
+}
+
+func (a *App) ClearScheduledLeave(rctx request.CTX, userID string) *model.AppError {
+	return model.NewAppError("ClearScheduledLeave", "not_implemented", nil, "", http.StatusNotImplemented)
+}
+
+func (a *App) GetActiveScheduledLeave(rctx request.CTX, userID string, now int64) (*model.ScheduledLeave, *model.AppError) {
+	return nil, model.NewAppError("GetActiveScheduledLeave", "not_implemented", nil, "", http.StatusNotImplemented)
+}
+
 func (a *App) UpdateUserActive(rctx request.CTX, userID string, active bool) *model.AppError {
 	user, err := a.GetUser(rctx, userID)
 	if err != nil {

@@ -156,6 +156,7 @@ import type {
     UserStatus,
     GetFilteredUsersStatsOpts,
     UserCustomStatus,
+    ScheduledLeave,
 } from '@mattermost/types/users';
 import type {DeepPartial, PartialExcept, RelationOneToOne} from '@mattermost/types/utilities';
 
@@ -1240,6 +1241,22 @@ export default class Client4 {
             `${this.getUserRoute('me')}/status/custom/recent/delete`,
             {method: 'post', body: JSON.stringify(customStatus)},
         );
+    };
+
+    getScheduledLeaveRoute(userId: string) {
+        return '';
+    }
+
+    getScheduledLeave = (userId: string) => {
+        return Promise.reject<ScheduledLeave>(new Error(`not implemented: ${userId}`));
+    };
+
+    setScheduledLeave = (userId: string, leave: ScheduledLeave) => {
+        return Promise.reject<ScheduledLeave>(new Error(`not implemented: ${userId} ${leave.start_at}`));
+    };
+
+    clearScheduledLeave = (userId: string) => {
+        return Promise.reject<StatusOK>(new Error(`not implemented: ${userId}`));
     };
 
     moveThread = (postId: string, channelId: string) => {

@@ -181,6 +181,7 @@ docker-compose.override.yaml
 !.cursor/cursor.md
 !.cursor/Dockerfile
 !.cursor/environment.json
+!.cursor/skills/
 !.cursor/scripts/
 .cursor/scripts/*
 !.cursor/scripts/cloud-agent-install.sh
@@ -218,3 +219,6 @@ server/docs/*.pdf
 server/docs/*.md
 server/data_dest/
 server/import/
+
+# Code Factory working files (plans, artifacts)
+temp-docs/

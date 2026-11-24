@@ -874,6 +874,21 @@ func (u *User) ValidateCustomStatus() bool {
 	return true
 }
 
+func (u *User) SetScheduledLeave(sl *ScheduledLeave) error {
+	return nil
+}
+
+func (u *User) GetScheduledLeave() *ScheduledLeave {
+	return nil
+}
+
+func (u *User) ClearScheduledLeave() {
+}
+
+func (u *User) ValidateScheduledLeave() bool {
+	return true
+}
+
 func (u *User) GetFullName() string {
 	if u.FirstName != "" && u.LastName != "" {
 		return u.FirstName + " " + u.LastName

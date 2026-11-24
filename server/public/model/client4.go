@@ -6308,6 +6308,36 @@ func (c *Client4) RemoveRecentUserCustomStatus(ctx context.Context, userId strin
 	return BuildResponse(r), nil
 }
 
+// GetScheduledLeave returns the scheduled leave of the given user.
+func (c *Client4) GetScheduledLeave(ctx context.Context, userId string) (*ScheduledLeave, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.userRoute(userId).Join("scheduled_leave"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*ScheduledLeave](r)
+}
+
+// SetScheduledLeave creates or replaces the scheduled leave of the given user.
+func (c *Client4) SetScheduledLeave(ctx context.Context, userId string, leave *ScheduledLeave) (*ScheduledLeave, *Response, error) {
+	r, err := c.doAPIPutJSON(ctx, c.userRoute(userId).Join("scheduled_leave"), leave)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*ScheduledLeave](r)
+}
+
+// ClearScheduledLeave removes the scheduled leave of the given user.
+func (c *Client4) ClearScheduledLeave(ctx context.Context, userId string) (*Response, error) {
+	r, err := c.doAPIDelete(ctx, c.userRoute(userId).Join("scheduled_leave"))
+	if err != nil {
+		return BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return BuildResponse(r), nil
+}
+
 // Emoji Section
 
 // CreateEmoji will save an emoji to the server if the current user has permission
