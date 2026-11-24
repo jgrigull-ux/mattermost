@@ -156,6 +156,7 @@ import type {
     UserStatus,
     GetFilteredUsersStatsOpts,
     UserCustomStatus,
+    ScheduledLeave,
 } from '@mattermost/types/users';
 import type {DeepPartial, PartialExcept, RelationOneToOne} from '@mattermost/types/utilities';
 
@@ -1239,6 +1240,31 @@ export default class Client4 {
         return this.doFetch(
             `${this.getUserRoute('me')}/status/custom/recent/delete`,
             {method: 'post', body: JSON.stringify(customStatus)},
+        );
+    };
+
+    getScheduledLeaveRoute(userId: string) {
+        return `${this.getUserRoute(userId)}/scheduled_leave`;
+    }
+
+    getScheduledLeave = (userId: string) => {
+        return this.doFetch<ScheduledLeave>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'get'},
+        );
+    };
+
+    setScheduledLeave = (userId: string, leave: ScheduledLeave) => {
+        return this.doFetch<ScheduledLeave>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'put', body: JSON.stringify(leave)},
+        );
+    };
+
+    clearScheduledLeave = (userId: string) => {
+        return this.doFetch<StatusOK>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'delete'},
         );
     };
 

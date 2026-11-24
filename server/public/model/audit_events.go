@@ -516,6 +516,7 @@ const (
 // Users
 const (
 	AuditEventAttachDeviceId                     = "attachDeviceId"                     // attach device IDs (standard or VoIP) to user session for mobile app
+	AuditEventClearScheduledLeave                = "clearScheduledLeave"                // remove a user's scheduled leave
 	AuditEventCreateUser                         = "createUser"                         // create user account
 	AuditEventCreateUserAccessToken              = "createUserAccessToken"              // create personal access token for user API access
 	AuditEventDeleteUser                         = "deleteUser"                         // delete user account
@@ -547,6 +548,7 @@ const (
 	AuditEventSendVerificationEmail              = "sendVerificationEmail"              // send email verification link to user
 	AuditEventSetDefaultProfileImage             = "setDefaultProfileImage"             // set user profile image to default avatar
 	AuditEventSetProfileImage                    = "setProfileImage"                    // set custom profile image for user
+	AuditEventSetScheduledLeave                  = "setScheduledLeave"                  // create or replace a user's scheduled leave
 	AuditEventSwitchAccountType                  = "switchAccountType"                  // switch user authentication method from one to another
 	AuditEventUpdatePassword                     = "updatePassword"                     // update user password
 	AuditEventUpdateUser                         = "updateUser"                         // update user account properties

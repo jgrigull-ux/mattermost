@@ -1253,6 +1253,118 @@
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+  "/api/v4/users/{user_id}/scheduled_leave":
+    get:
+      tags:
+        - users
+      summary: Get a user's scheduled leave
+      description: >
+        Get the leave the user has scheduled. The leave is returned even when it
+        has already ended; it is active only while `start_at <= now < end_at`.
+        The same value is stored as JSON in the user's `props.scheduledLeave`.
+
+        ##### Permissions
+
+        Must be logged in as the user or have the `edit_other_users` permission.
+
+        __Minimum server version__: 12.3
+      operationId: GetScheduledLeave
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scheduled leave retrieval successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduledLeave"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - users
+      summary: Set a user's scheduled leave
+      description: >
+        Create or replace the user's scheduled leave. Sends a `user_updated`
+        websocket event.
+
+        ##### Permissions
+
+        Must be logged in as the user or have the `edit_other_users` permission.
+
+        __Minimum server version__: 12.3
+      operationId: SetScheduledLeave
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduledLeave"
+        description: >
+          The leave. `end_at` must be after `start_at` and in the future, the
+          leave can't be longer than 365 days, and `backup_user_id` must be an
+          active user other than the leave owner.
+        required: true
+      responses:
+        "200":
+          description: Scheduled leave saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduledLeave"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      tags:
+        - users
+      summary: Clear a user's scheduled leave
+      description: >
+        Remove the user's scheduled leave. Succeeds when no leave is set. Sends a
+        `user_updated` websocket event when a leave was removed.
+
+        ##### Permissions
+
+        Must be logged in as the user or have the `edit_other_users` permission.
+
+        __Minimum server version__: 12.3
+      operationId: ClearScheduledLeave
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scheduled leave cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusOK"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   "/api/v4/users/{user_id}/roles":
     put:
       tags:
@@ -3397,7 +3509,7 @@
 
         Must be logged in as user or have `edit_other_users` permission. Must have `view_team` permission for the team.
 
-        __Minimum server version__: 11.3
+        __Minimum server version__: 12.3
       operationId: MarkAllTeamChannelsRead
       parameters:
         - name: user_id

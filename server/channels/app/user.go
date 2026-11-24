@@ -1697,6 +1697,93 @@ func (a *App) UpdateUser(rctx request.CTX, user *model.User, sendNotifications b
 	return newUser, nil
 }
 
+// GetScheduledLeave returns the user's stored leave, which may already have ended.
+// It returns a 404 error when no leave is set.
+func (a *App) GetScheduledLeave(rctx request.CTX, userID string) (*model.ScheduledLeave, *model.AppError) {
+	user, appErr := a.GetUser(rctx, userID)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	leave := user.GetScheduledLeave()
+	if leave == nil {
+		return nil, model.NewAppError("GetScheduledLeave", "app.scheduled_leave.get.not_found.app_error", nil, "user_id="+userID, http.StatusNotFound)
+	}
+
+	return leave, nil
+}
+
+func (a *App) SetScheduledLeave(rctx request.CTX, userID string, leave *model.ScheduledLeave) (*model.ScheduledLeave, *model.AppError) {
+	if appErr := leave.IsValid(); appErr != nil {
+		return nil, appErr
+	}
+
+	if leave.EndAt <= model.GetMillis() {
+		return nil, model.NewAppError("SetScheduledLeave", "app.scheduled_leave.set.end_in_past.app_error", nil, "user_id="+userID, http.StatusBadRequest)
+	}
+
+	if leave.BackupUserId != "" {
+		if leave.BackupUserId == userID {
+			return nil, model.NewAppError("SetScheduledLeave", "app.scheduled_leave.set.backup_self.app_error", nil, "user_id="+userID, http.StatusBadRequest)
+		}
+
+		backup, appErr := a.GetUser(rctx, leave.BackupUserId)
+		if appErr != nil && appErr.StatusCode != http.StatusNotFound {
+			return nil, appErr
+		}
+		if backup == nil || backup.DeleteAt != 0 {
+			return nil, model.NewAppError("SetScheduledLeave", "app.scheduled_leave.set.backup_invalid.app_error", nil, "backup_user_id="+leave.BackupUserId, http.StatusBadRequest)
+		}
+	}
+
+	user, appErr := a.GetUser(rctx, userID)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	if err := user.SetScheduledLeave(leave); err != nil {
+		return nil, model.NewAppError("SetScheduledLeave", "api.marshal_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
+	updatedUser, appErr := a.UpdateUser(rctx, user, true)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	return updatedUser.GetScheduledLeave(), nil
+}
+
+// ClearScheduledLeave removes the user's leave. It does nothing when no leave is set.
+func (a *App) ClearScheduledLeave(rctx request.CTX, userID string) *model.AppError {
+	user, appErr := a.GetUser(rctx, userID)
+	if appErr != nil {
+		return appErr
+	}
+
+	if _, exists := user.Props[model.UserPropsKeyScheduledLeave]; !exists {
+		return nil
+	}
+
+	user.ClearScheduledLeave()
+	_, appErr = a.UpdateUser(rctx, user, true)
+	return appErr
+}
+
+// GetActiveScheduledLeave returns the user's leave only when now (epoch ms) is inside its window, otherwise nil.
+func (a *App) GetActiveScheduledLeave(rctx request.CTX, userID string, now int64) (*model.ScheduledLeave, *model.AppError) {
+	user, appErr := a.GetUser(rctx, userID)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	leave := user.GetScheduledLeave()
+	if !leave.IsActive(now) {
+		return nil, nil
+	}
+
+	return leave, nil
+}
+
 func (a *App) UpdateUserActive(rctx request.CTX, userID string, active bool) *model.AppError {
 	user, err := a.GetUser(rctx, userID)
 	if err != nil {

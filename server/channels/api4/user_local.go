@@ -34,6 +34,9 @@ func (api *API) InitUserLocal() {
 	api.BaseRoutes.User.Handle("/convert_to_bot", api.APILocal(convertUserToBot)).Methods(http.MethodPost)
 	api.BaseRoutes.User.Handle("/email/verify/member", api.APILocal(verifyUserEmailWithoutToken)).Methods(http.MethodPost)
 	api.BaseRoutes.User.Handle("/promote", api.APILocal(promoteGuestToUser)).Methods(http.MethodPost)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APILocal(getScheduledLeave)).Methods(http.MethodGet)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APILocal(setScheduledLeave)).Methods(http.MethodPut)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APILocal(clearScheduledLeave)).Methods(http.MethodDelete)
 	api.BaseRoutes.User.Handle("/demote", api.APILocal(demoteUserToGuest)).Methods(http.MethodPost)
 
 	api.BaseRoutes.User.Handle("/auth", api.APILocal(updateUserAuth)).Methods(http.MethodPut)

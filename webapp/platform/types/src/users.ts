@@ -128,6 +128,21 @@ export type UserCustomStatus = {
     expires_at?: string;
 };
 
+/**
+ * A date-ranged leave stored as JSON in `UserProfile.props.scheduledLeave`.
+ * The user is on leave while `start_at <= now < end_at`; `end_at` is the return time.
+ * Times are epoch milliseconds.
+ */
+export type ScheduledLeave = {
+    start_at: number;
+    end_at: number;
+    timezone?: string;
+    backup_user_id?: string;
+    note?: string;
+    auto_reply_enabled: boolean;
+    auto_reply_message?: string;
+};
+
 export type UserAccessToken = {
     id: string;
     token?: string;

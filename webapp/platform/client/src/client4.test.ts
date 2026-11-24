@@ -504,6 +504,70 @@ describe('Client4', () => {
         });
     });
 
+    describe('scheduled leave routes', () => {
+        let client: Client4;
+
+        const leave = {
+            start_at: 1767225600000,
+            end_at: 1767830400000,
+            timezone: 'America/Los_Angeles',
+            backup_user_id: 'backup1',
+            note: 'Family trip',
+            auto_reply_enabled: true,
+            auto_reply_message: 'Back on the 8th',
+        };
+
+        beforeEach(() => {
+            client = new Client4();
+            client.setUrl('http://mattermost.example.com');
+        });
+
+        test('getScheduledLeaveRoute should build correct URL', () => {
+            expect(client.getScheduledLeaveRoute('user1')).toBe(
+                'http://mattermost.example.com/api/v4/users/user1/scheduled_leave',
+            );
+        });
+
+        test('getScheduledLeave should GET the leave', async () => {
+            nock(client.getBaseRoute()).
+                get('/users/user1/scheduled_leave').
+                reply(200, leave);
+
+            await expect(client.getScheduledLeave('user1')).resolves.toEqual(leave);
+        });
+
+        test('setScheduledLeave should PUT the leave and return the saved leave', async () => {
+            nock(client.getBaseRoute()).
+                put('/users/me/scheduled_leave', leave).
+                reply(200, leave);
+
+            await expect(client.setScheduledLeave('me', leave)).resolves.toEqual(leave);
+        });
+
+        test('clearScheduledLeave should DELETE the leave', async () => {
+            nock(client.getBaseRoute()).
+                delete('/users/user1/scheduled_leave').
+                reply(200, {status: 'OK'});
+
+            await expect(client.clearScheduledLeave('user1')).resolves.toEqual({status: 'OK'});
+        });
+
+        test('setScheduledLeave should surface the server validation error', async () => {
+            nock(client.getBaseRoute()).
+                put('/users/me/scheduled_leave').
+                reply(400, {
+                    id: 'model.scheduled_leave.is_valid.end_at.app_error',
+                    message: 'The end date must be after the start date.',
+                    status_code: 400,
+                });
+
+            await expect(client.setScheduledLeave('me', {...leave, end_at: leave.start_at - 1})).rejects.toMatchObject({
+                server_error_id: 'model.scheduled_leave.is_valid.end_at.app_error',
+                status_code: 400,
+            });
+        });
+    });
+
     describe('team access control routes', () => {
         let client: Client4;
 

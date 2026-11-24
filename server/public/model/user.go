@@ -459,7 +459,7 @@ func (u *User) IsValid() *AppError {
 	}
 
 	if u.Props != nil {
-		if !u.ValidateCustomStatus() {
+		if !u.ValidateCustomStatus() || !u.ValidateScheduledLeave() {
 			return NewAppError("User.IsValid", "model.user.is_valid.invalidProperty.app_error",
 				map[string]any{"Props": u.Props}, "user_id="+u.Id, http.StatusBadRequest)
 		}
@@ -872,6 +872,43 @@ func (u *User) ValidateCustomStatus() bool {
 		}
 	}
 	return true
+}
+
+func (u *User) SetScheduledLeave(sl *ScheduledLeave) error {
+	u.MakeNonNil()
+	leaveJSON, err := json.Marshal(sl)
+	if err != nil {
+		return err
+	}
+	u.Props[UserPropsKeyScheduledLeave] = string(leaveJSON)
+	return nil
+}
+
+// GetScheduledLeave returns the stored leave, or nil when none is set or it cannot be parsed.
+// The leave may have ended; use IsActive to check.
+func (u *User) GetScheduledLeave() *ScheduledLeave {
+	data := u.Props[UserPropsKeyScheduledLeave]
+	if data == "" {
+		return nil
+	}
+	var sl *ScheduledLeave
+	if err := json.Unmarshal([]byte(data), &sl); err != nil {
+		return nil
+	}
+	return sl
+}
+
+func (u *User) ClearScheduledLeave() {
+	delete(u.Props, UserPropsKeyScheduledLeave)
+}
+
+func (u *User) ValidateScheduledLeave() bool {
+	data, exists := u.Props[UserPropsKeyScheduledLeave]
+	if !exists || data == "" {
+		return true
+	}
+	sl := u.GetScheduledLeave()
+	return sl != nil && sl.IsValid() == nil
 }
 
 func (u *User) GetFullName() string {

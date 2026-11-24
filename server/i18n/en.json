@@ -12217,6 +12217,26 @@
     "description": "API error shown when persisting a new scheduled post to the database fails."
   },
   {
+    "id": "app.scheduled_leave.get.not_found.app_error",
+    "translation": "No scheduled leave is set for this user.",
+    "description": "API error returned when reading a user's scheduled leave (a planned date range when they are away) and none is set."
+  },
+  {
+    "id": "app.scheduled_leave.set.backup_invalid.app_error",
+    "translation": "The backup contact doesn't exist or is deactivated.",
+    "description": "API error returned when a scheduled leave's backup contact (the person covering while the user is away) is not an existing, active user."
+  },
+  {
+    "id": "app.scheduled_leave.set.backup_self.app_error",
+    "translation": "You can't be your own backup contact.",
+    "description": "API error returned when a user picks themself as the backup contact (the person covering while they are away) for their scheduled leave."
+  },
+  {
+    "id": "app.scheduled_leave.set.end_in_past.app_error",
+    "translation": "The leave end date must be in the future.",
+    "description": "API error returned when saving a scheduled leave whose end (return) date has already passed."
+  },
+  {
     "id": "app.scheduled_post.error_reason.channel_archived",
     "translation": "Channel is archived",
     "description": "Failure reason inserted into the bot notification about scheduled posts that could not be sent; fills {{.ErrorReason}} after 'Reason:'."
@@ -19650,6 +19670,41 @@
     "description": "API error for admin reporting endpoints when the requested date range value is not one of the supported options; shown to system admins."
   },
   {
+    "id": "model.scheduled_leave.is_valid.auto_reply_message.app_error",
+    "translation": "The automatic reply can't be longer than {{.AutoReplyMessageMaxRunes}} characters.",
+    "description": "Validation error shown when a scheduled leave's automatic reply message (sent to people who message the user while away) is too long; {{.AutoReplyMessageMaxRunes}} is the maximum number of characters."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.backup_user_id.app_error",
+    "translation": "The backup contact is not a valid user ID.",
+    "description": "Validation error shown when a scheduled leave's backup contact (the person covering while the user is away) is not a well-formed user ID."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.duration.app_error",
+    "translation": "Leave can't be longer than {{.MaxDays}} days.",
+    "description": "Validation error shown when a scheduled leave is longer than the maximum; {{.MaxDays}} is the maximum number of days (365)."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.end_at.app_error",
+    "translation": "The leave end date must be after the start date.",
+    "description": "Validation error shown when a scheduled leave's end (return) date is on or before its start date."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.note.app_error",
+    "translation": "The leave note can't be longer than {{.NoteMaxRunes}} characters.",
+    "description": "Validation error shown when a scheduled leave's note is too long; {{.NoteMaxRunes}} is the maximum number of characters."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.start_at.app_error",
+    "translation": "The leave start date is missing or invalid.",
+    "description": "Validation error shown when a scheduled leave (a planned date range when a user is away) has no start date."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.timezone.app_error",
+    "translation": "The leave timezone is not a valid timezone.",
+    "description": "Validation error shown when a scheduled leave's timezone is not a known IANA timezone name such as America/New_York."
+  },
+  {
     "id": "model.scheduled_post.is_valid.empty_post.app_error",
     "translation": "Cannot schedule an empty post. Scheduled post must have at least a message or file attachments.",
     "description": "API error when trying to schedule a message for later sending that has neither text nor attachments; 'post' is a chat message (noun), 'schedule' is a verb."
@@ -20036,8 +20091,8 @@
   },
   {
     "id": "model.user.is_valid.invalidProperty.app_error",
-    "translation": "Invalid props (custom status)",
-    "description": "API error when a user account's props field contains an invalid custom status entry; 'props' and 'custom status' are the user-set status message feature."
+    "translation": "Invalid props (custom status or scheduled leave)",
+    "description": "API error when a user account's props field contains an invalid custom status or scheduled leave entry; 'props' are per-user settings, 'custom status' is the user-set status message and 'scheduled leave' is a planned date range when the user is away."
   },
   {
     "id": "model.user.is_valid.last_name.app_error",
