@@ -37,6 +37,9 @@ import {
     sortByUsername,
     isGuest,
     applyRolesFilters,
+    isScheduledLeaveActive,
+    isScheduledLeaveUpcoming,
+    parseScheduledLeave,
 } from 'mattermost-redux/utils/user_utils';
 
 // Re-define these types to ensure that these are typed correctly when mattermost-redux is published
@@ -849,18 +852,24 @@ export const getLastActiveTimestampUnits: (state: GlobalState, userId: string) =
     },
 );
 
+/**
+ * Returns the user's scheduled leave whether or not it is in effect. Nothing clears an ended leave from the
+ * profile, so use getActiveScheduledLeave or getUpcomingScheduledLeave to decide what to show.
+ */
 export function getScheduledLeaveForUser(state: GlobalState, userId: UserProfile['id']): ScheduledLeave | undefined {
-    return undefined;
+    return parseScheduledLeave(getUser(state, userId));
 }
 
 export function getActiveScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): ScheduledLeave | undefined {
-    return undefined;
+    const leave = getScheduledLeaveForUser(state, userId);
+    return isScheduledLeaveActive(leave, now) ? leave : undefined;
 }
 
 export function isUserOnScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): boolean {
-    return false;
+    return Boolean(getActiveScheduledLeave(state, userId, now));
 }
 
 export function getUpcomingScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): ScheduledLeave | undefined {
-    return undefined;
+    const leave = getScheduledLeaveForUser(state, userId);
+    return isScheduledLeaveUpcoming(leave, now) ? leave : undefined;
 }

@@ -81,7 +81,13 @@ describe('components/scheduled_leave/ScheduledLeaveLabel', () => {
 
     test('shows the start date for upcoming leave', () => {
         const upcoming = {...leave, start_at: Date.UTC(2026, 11, 4, 17), end_at: END_AT};
-        renderWithContext(<ScheduledLeaveLabel leave={upcoming} upcoming={true}/>, getState('America/Los_Angeles'));
+        renderWithContext(
+            <ScheduledLeaveLabel
+                leave={upcoming}
+                upcoming={true}
+            />,
+            getState('America/Los_Angeles'),
+        );
         expect(screen.getByText('Away from Fri, Dec 4')).toBeInTheDocument();
     });
 
@@ -92,7 +98,13 @@ describe('components/scheduled_leave/ScheduledLeaveLabel', () => {
     });
 
     test('hides the backup when showBackup is false', () => {
-        renderWithContext(<ScheduledLeaveLabel leave={leave} showBackup={false}/>, getState('America/Los_Angeles'));
+        renderWithContext(
+            <ScheduledLeaveLabel
+                leave={leave}
+                showBackup={false}
+            />,
+            getState('America/Los_Angeles'),
+        );
         expect(screen.getByText('On leave until Tue, Dec 8')).toBeInTheDocument();
         expect(screen.queryByText(/@sam/)).not.toBeInTheDocument();
     });
