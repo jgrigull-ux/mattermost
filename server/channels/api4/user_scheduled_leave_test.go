@@ -166,6 +166,8 @@ func TestScheduledLeavePermissions(t *testing.T) {
 	})
 
 	t.Run("user with edit_others_users can manage a regular user's leave but not an admin's", func(t *testing.T) {
+		th.AddPermissionToRole(t, model.PermissionEditOtherUsers.Id, model.SystemManagerRoleId)
+		defer th.RemovePermissionFromRole(t, model.PermissionEditOtherUsers.Id, model.SystemManagerRoleId)
 		th.LoginSystemManager(t)
 		client := th.SystemManagerClient
 
