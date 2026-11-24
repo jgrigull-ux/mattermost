@@ -6,7 +6,7 @@ import type {Group} from '@mattermost/types/groups';
 import type {Reaction} from '@mattermost/types/reactions';
 import type {GlobalState} from '@mattermost/types/store';
 import type {Team, TeamMembership} from '@mattermost/types/teams';
-import type {UserProfile} from '@mattermost/types/users';
+import type {ScheduledLeave, UserProfile} from '@mattermost/types/users';
 import type {
     IDMappedObjects,
     RelationOneToManyUnique,
@@ -848,3 +848,19 @@ export const getLastActiveTimestampUnits: (state: GlobalState, userId: string) =
         return timestampUnits;
     },
 );
+
+export function getScheduledLeaveForUser(state: GlobalState, userId: UserProfile['id']): ScheduledLeave | undefined {
+    return undefined;
+}
+
+export function getActiveScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): ScheduledLeave | undefined {
+    return undefined;
+}
+
+export function isUserOnScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): boolean {
+    return false;
+}
+
+export function getUpcomingScheduledLeave(state: GlobalState, userId: UserProfile['id'], now = Date.now()): ScheduledLeave | undefined {
+    return undefined;
+}

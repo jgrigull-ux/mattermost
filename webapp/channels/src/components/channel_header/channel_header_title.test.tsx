@@ -41,6 +41,12 @@ jest.mock('./channel_header_title_group', () => {
     return () => <div id='mock-group'/>;
 });
 
+jest.mock('./channel_header_scheduled_leave', () => {
+    return ({dmUser}: {dmUser?: {id?: string}}) => (
+        <div id='mock-scheduled-leave'>{dmUser?.id}</div>
+    );
+});
+
 jest.mock('../channel_header_menu/channel_header_menu', () => {
     return () => <div id='mock-header-menu'/>;
 });
@@ -154,6 +160,43 @@ describe('components/channel_header/ChannelHeaderTitle', () => {
         // GM channel renders header menu but no profile picture (unlike DM)
         expect(document.querySelector('#mock-header-menu')).toBeInTheDocument();
         expect(document.querySelector('#mock-profile-picture')).not.toBeInTheDocument();
+    });
+
+    test('should render the scheduled leave chip after the name for a DM channel', () => {
+        const channel = TestHelper.getChannelMock({
+            id: 'channel_id',
+            type: 'D',
+            display_name: 'User Name',
+        });
+        const dmUser = TestHelper.getUserMock({
+            id: 'user_id',
+            username: 'testuser',
+        });
+
+        (getCurrentChannel as jest.Mock).mockReturnValue(channel);
+
+        renderWithContext(<ChannelHeaderTitle dmUser={dmUser}/>);
+
+        const chip = document.querySelector('#mock-scheduled-leave');
+        expect(chip).toHaveTextContent('user_id');
+        expect(document.querySelector('#mock-header-menu')!.nextElementSibling).toBe(chip);
+    });
+
+    test.each([
+        ['O', 'public'],
+        ['G', 'group'],
+    ])('should not render the scheduled leave chip for a %s (%s) channel', (type) => {
+        const channel = TestHelper.getChannelMock({
+            id: 'channel_id',
+            type: type as 'O' | 'G',
+            display_name: 'Channel',
+        });
+
+        (getCurrentChannel as jest.Mock).mockReturnValue(channel);
+
+        renderWithContext(<ChannelHeaderTitle/>);
+
+        expect(document.querySelector('#mock-scheduled-leave')).not.toBeInTheDocument();
     });
 
     describe('plugin channel icon override', () => {
