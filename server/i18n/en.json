@@ -12217,6 +12217,26 @@
     "description": "API error shown when persisting a new scheduled post to the database fails."
   },
   {
+    "id": "app.scheduled_leave.get.not_found.app_error",
+    "translation": "No scheduled leave is set for this user.",
+    "description": "API error returned when reading a user's scheduled leave (a planned date range when they are away) and none is set."
+  },
+  {
+    "id": "app.scheduled_leave.set.backup_invalid.app_error",
+    "translation": "The backup contact doesn't exist or is deactivated.",
+    "description": "API error returned when a scheduled leave's backup contact (the person covering while the user is away) is not an existing, active user."
+  },
+  {
+    "id": "app.scheduled_leave.set.backup_self.app_error",
+    "translation": "You can't be your own backup contact.",
+    "description": "API error returned when a user picks themself as the backup contact (the person covering while they are away) for their scheduled leave."
+  },
+  {
+    "id": "app.scheduled_leave.set.end_in_past.app_error",
+    "translation": "The leave end date must be in the future.",
+    "description": "API error returned when saving a scheduled leave whose end (return) date has already passed."
+  },
+  {
     "id": "app.scheduled_post.error_reason.channel_archived",
     "translation": "Channel is archived",
     "description": "Failure reason inserted into the bot notification about scheduled posts that could not be sent; fills {{.ErrorReason}} after 'Reason:'."
@@ -20036,8 +20056,8 @@
   },
   {
     "id": "model.user.is_valid.invalidProperty.app_error",
-    "translation": "Invalid props (custom status)",
-    "description": "API error when a user account's props field contains an invalid custom status entry; 'props' and 'custom status' are the user-set status message feature."
+    "translation": "Invalid props (custom status or scheduled leave)",
+    "description": "API error when a user account's props field contains an invalid custom status or scheduled leave entry; 'props' are per-user settings, 'custom status' is the user-set status message and 'scheduled leave' is a planned date range when the user is away."
   },
   {
     "id": "model.user.is_valid.last_name.app_error",

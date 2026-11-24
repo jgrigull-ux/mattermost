@@ -1244,19 +1244,28 @@ export default class Client4 {
     };
 
     getScheduledLeaveRoute(userId: string) {
-        return '';
+        return `${this.getUserRoute(userId)}/scheduled_leave`;
     }
 
     getScheduledLeave = (userId: string) => {
-        return Promise.reject<ScheduledLeave>(new Error(`not implemented: ${userId}`));
+        return this.doFetch<ScheduledLeave>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'get'},
+        );
     };
 
     setScheduledLeave = (userId: string, leave: ScheduledLeave) => {
-        return Promise.reject<ScheduledLeave>(new Error(`not implemented: ${userId} ${leave.start_at}`));
+        return this.doFetch<ScheduledLeave>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'put', body: JSON.stringify(leave)},
+        );
     };
 
     clearScheduledLeave = (userId: string) => {
-        return Promise.reject<StatusOK>(new Error(`not implemented: ${userId}`));
+        return this.doFetch<StatusOK>(
+            this.getScheduledLeaveRoute(userId),
+            {method: 'delete'},
+        );
     };
 
     moveThread = (postId: string, channelId: string) => {

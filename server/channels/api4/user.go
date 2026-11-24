@@ -47,6 +47,9 @@ func (api *API) InitUser() {
 	api.BaseRoutes.User.Handle("", api.APISessionRequired(updateUser)).Methods(http.MethodPut)
 	api.BaseRoutes.User.Handle("/patch", api.APISessionRequired(patchUser)).Methods(http.MethodPut)
 	api.BaseRoutes.User.Handle("", api.APISessionRequired(deleteUser)).Methods(http.MethodDelete)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APISessionRequired(getScheduledLeave)).Methods(http.MethodGet)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APISessionRequired(setScheduledLeave)).Methods(http.MethodPut)
+	api.BaseRoutes.User.Handle("/scheduled_leave", api.APISessionRequired(clearScheduledLeave)).Methods(http.MethodDelete)
 	api.BaseRoutes.User.Handle("/roles", api.APISessionRequired(updateUserRoles)).Methods(http.MethodPut)
 	api.BaseRoutes.User.Handle("/active", api.APISessionRequired(updateUserActive)).Methods(http.MethodPut)
 	api.BaseRoutes.User.Handle("/password", api.APISessionRequired(updatePassword)).Methods(http.MethodPut)
@@ -1569,6 +1572,87 @@ func updateUser(c *Context, w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(ruser); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
+}
+
+func getScheduledLeave(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireUserId()
+	if c.Err != nil {
+		return
+	}
+
+	if !c.App.SessionHasPermissionToUser(c.AppContext, *c.AppContext.Session(), c.Params.UserId) {
+		c.SetPermissionError(model.PermissionEditOtherUsers)
+		return
+	}
+
+	leave, appErr := c.App.GetScheduledLeave(c.AppContext, c.Params.UserId)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(leave); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
+	}
+}
+
+func setScheduledLeave(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireUserId()
+	if c.Err != nil {
+		return
+	}
+
+	var leave model.ScheduledLeave
+	if jsonErr := json.NewDecoder(r.Body).Decode(&leave); jsonErr != nil {
+		c.SetInvalidParamWithErr("scheduled_leave", jsonErr)
+		return
+	}
+
+	auditRec := c.MakeAuditRecord(model.AuditEventSetScheduledLeave, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+	model.AddEventParameterToAuditRec(auditRec, "user_id", c.Params.UserId)
+	model.AddEventParameterAuditableToAuditRec(auditRec, "scheduled_leave", &leave)
+
+	if !c.App.SessionHasPermissionToUser(c.AppContext, *c.AppContext.Session(), c.Params.UserId) {
+		c.SetPermissionError(model.PermissionEditOtherUsers)
+		return
+	}
+
+	saved, appErr := c.App.SetScheduledLeave(c.AppContext, c.Params.UserId, &leave)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+
+	auditRec.Success()
+
+	if err := json.NewEncoder(w).Encode(saved); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
+	}
+}
+
+func clearScheduledLeave(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireUserId()
+	if c.Err != nil {
+		return
+	}
+
+	auditRec := c.MakeAuditRecord(model.AuditEventClearScheduledLeave, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+	model.AddEventParameterToAuditRec(auditRec, "user_id", c.Params.UserId)
+
+	if !c.App.SessionHasPermissionToUser(c.AppContext, *c.AppContext.Session(), c.Params.UserId) {
+		c.SetPermissionError(model.PermissionEditOtherUsers)
+		return
+	}
+
+	if appErr := c.App.ClearScheduledLeave(c.AppContext, c.Params.UserId); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
+	auditRec.Success()
+	ReturnStatusOK(w)
 }
 
 func patchUser(c *Context, w http.ResponseWriter, r *http.Request) {

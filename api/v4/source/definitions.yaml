@@ -3020,6 +3020,38 @@ components:
           type: string
         request_id:
           type: string
+    ScheduledLeave:
+      type: object
+      description: >
+        A date-ranged leave. The user is on leave while `start_at <= now < end_at`;
+        `end_at` is the return time. Stored as JSON in the user's `props.scheduledLeave`.
+      required:
+        - start_at
+        - end_at
+      properties:
+        start_at:
+          description: Start of the leave, in milliseconds since the Unix epoch.
+          type: integer
+          format: int64
+        end_at:
+          description: Return time, in milliseconds since the Unix epoch. Must be after `start_at` and at most 365 days later.
+          type: integer
+          format: int64
+        timezone:
+          description: IANA timezone name used to display the dates, for example `America/New_York`.
+          type: string
+        backup_user_id:
+          description: ID of an active user who covers while the user is away.
+          type: string
+        note:
+          description: Free-text note, at most 500 characters. Visible to anyone who can see the user's profile.
+          type: string
+        auto_reply_enabled:
+          description: Whether direct messages get an automatic reply during the leave.
+          type: boolean
+        auto_reply_message:
+          description: Automatic reply text, at most 1000 characters. When empty, a default message is used.
+          type: string
     Status:
       type: object
       properties:
