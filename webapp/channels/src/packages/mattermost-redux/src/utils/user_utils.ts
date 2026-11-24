@@ -3,7 +3,7 @@
 
 import type {ChannelMembership} from '@mattermost/types/channels';
 import type {TeamMembership} from '@mattermost/types/teams';
-import type {UserProfile} from '@mattermost/types/users';
+import type {ScheduledLeave, UserProfile} from '@mattermost/types/users';
 import type {IDMappedObjects} from '@mattermost/types/utilities';
 
 import {localizeMessage} from 'mattermost-redux/utils/i18n_utils';
@@ -250,4 +250,48 @@ export function applyRolesFilters(user: UserProfile, filterRoles: string[], excl
         return false;
     }
     return filterRoles.length === 0 || filterRoles.some(checkUserHasRole.bind(null, user, userIsNotAdminOrGuest, membership));
+}
+
+export const SCHEDULED_LEAVE_UPCOMING_WINDOW = 7 * 24 * 60 * 60 * 1000;
+
+// Keyed by profile object so every selector call for an unchanged profile returns the same leave object.
+const parsedScheduledLeaves = new WeakMap<UserProfile, ScheduledLeave | undefined>();
+
+export function parseScheduledLeave(user?: UserProfile): ScheduledLeave | undefined {
+    if (!user) {
+        return undefined;
+    }
+    if (parsedScheduledLeaves.has(user)) {
+        return parsedScheduledLeaves.get(user);
+    }
+
+    let leave: ScheduledLeave | undefined;
+    const value = user.props?.scheduledLeave;
+    if (value) {
+        try {
+            const parsed = JSON.parse(value);
+            if (
+                parsed &&
+                typeof parsed === 'object' &&
+                typeof parsed.start_at === 'number' &&
+                typeof parsed.end_at === 'number' &&
+                parsed.end_at > parsed.start_at
+            ) {
+                leave = parsed;
+            }
+        } catch {
+            // An unparsable value means no leave.
+        }
+    }
+
+    parsedScheduledLeaves.set(user, leave);
+    return leave;
+}
+
+export function isScheduledLeaveActive(leave: ScheduledLeave | undefined, now: number): boolean {
+    return Boolean(leave && leave.start_at <= now && now < leave.end_at);
+}
+
+export function isScheduledLeaveUpcoming(leave: ScheduledLeave | undefined, now: number): boolean {
+    return Boolean(leave && now < leave.start_at && leave.start_at <= now + SCHEDULED_LEAVE_UPCOMING_WINDOW);
 }

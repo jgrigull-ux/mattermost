@@ -466,6 +466,33 @@ describe('components/ProfilePopover', () => {
         expect(await screen.queryByText('In a meeting')).not.toBeInTheDocument();
     });
 
+    test('should show scheduled leave under the custom status', async () => {
+        const [props, initialState] = getBasePropsAndState();
+        const now = Date.now();
+        initialState.entities!.users!.profiles!.user1!.props!.scheduledLeave = JSON.stringify({
+            start_at: now - 1000,
+            end_at: now + (3 * 24 * 60 * 60 * 1000),
+            note: 'Family trip',
+            auto_reply_enabled: false,
+        });
+
+        renderWithPluginReducers(<ProfilePopover {...props}/>, initialState);
+
+        const leaveLabel = await screen.findByText(/On leave until/);
+        const customStatus = screen.getByText('In a meeting');
+        expect(screen.getByText('Family trip')).toBeInTheDocument();
+        expect(customStatus.compareDocumentPosition(leaveLabel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    test('should not show scheduled leave for a user without it', async () => {
+        const [props, initialState] = getBasePropsAndState();
+
+        renderWithPluginReducers(<ProfilePopover {...props}/>, initialState);
+
+        await screen.findByText('In a meeting');
+        expect(screen.queryByText(/On leave until|Away from/)).not.toBeInTheDocument();
+    });
+
     test('should show last active display', async () => {
         const [props, initialState] = getBasePropsAndState();
 

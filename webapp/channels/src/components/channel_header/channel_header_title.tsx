@@ -18,6 +18,7 @@ import BotTag from 'components/widgets/tag/bot_tag';
 import {getArchiveIconComponent} from 'utils/channel_utils';
 import {Constants} from 'utils/constants';
 
+import ChannelHeaderScheduledLeave from './channel_header_scheduled_leave';
 import ChannelHeaderTitleDirect from './channel_header_title_direct';
 import ChannelHeaderTitleFavorite from './channel_header_title_favorite';
 import ChannelHeaderTitleGroup from './channel_header_title_group';
@@ -118,6 +119,7 @@ const ChannelHeaderTitle = ({
                 sharedIcon={sharedIcon}
                 archivedIcon={archivedIcon}
             />
+            {isDirect && <ChannelHeaderScheduledLeave dmUser={dmUser}/>}
         </div>
     );
 };

@@ -1,0 +1,10 @@
+.scheduled-leave-label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 8px;
+
+    .scheduled-leave-backup {
+        color: rgba(var(--center-channel-color-rgb), 0.72);
+    }
+}

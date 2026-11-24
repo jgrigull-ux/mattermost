@@ -1913,8 +1913,11 @@ export async function handleUserUpdatedEvent(msg: WebSocketMessages.UserUpdated)
 
     const state = getState();
     const currentUser = getCurrentUser(state);
-    const user = msg.data.user;
-    if (user && user.props) {
+
+    // The server omits empty props, and received profiles are merged into the stored ones, so without this a user
+    // whose last prop was removed (for example a cleared scheduled leave) would keep it until the next reload.
+    const user = {...msg.data.user, props: msg.data.user.props ?? {}};
+    if (msg.data.user.props) {
         const customStatus = user.props.customStatus ? JSON.parse(user.props.customStatus) : undefined;
         dispatch(loadCustomEmojisIfNeeded([customStatus?.emoji]));
     }
