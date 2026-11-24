@@ -738,14 +738,53 @@ export function unsetCustomStatus() {
 }
 
 export function setScheduledLeave(leave: ScheduledLeave): ActionFuncAsync<ScheduledLeave> {
-    return async () => {
-        return {error: new Error(`not implemented ${leave.start_at}`)};
+    return async (dispatch, getState) => {
+        const currentUserId = getCurrentUserId(getState());
+
+        let data: ScheduledLeave;
+        try {
+            data = await Client4.setScheduledLeave(currentUserId, leave);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        const currentUser = getState().entities.users.profiles[currentUserId];
+        if (currentUser) {
+            dispatch({
+                type: UserTypes.RECEIVED_ME,
+                data: {...currentUser, props: {...currentUser.props, scheduledLeave: JSON.stringify(data)}},
+            });
+        }
+
+        return {data};
     };
 }
 
 export function clearScheduledLeave(): ActionFuncAsync<boolean> {
-    return async () => {
-        return {error: new Error('not implemented')};
+    return async (dispatch, getState) => {
+        const currentUserId = getCurrentUserId(getState());
+
+        try {
+            await Client4.clearScheduledLeave(currentUserId);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        const currentUser = getState().entities.users.profiles[currentUserId];
+        if (currentUser?.props?.scheduledLeave !== undefined) {
+            const props = {...currentUser.props};
+            delete props.scheduledLeave;
+            dispatch({
+                type: UserTypes.RECEIVED_ME,
+                data: {...currentUser, props},
+            });
+        }
+
+        return {data: true};
     };
 }
 

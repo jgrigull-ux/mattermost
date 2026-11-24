@@ -1,0 +1,65 @@
+.ScheduledLeaveModal {
+    width: 600px;
+
+    &.modal-dialog {
+        margin: auto;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg, 20px);
+    }
+
+    &__dates {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md, 16px);
+    }
+
+    &__dateField {
+        min-width: 0;
+        padding: 0;
+        border: none;
+        margin: 0;
+    }
+
+    &__label {
+        display: block;
+        padding: 0;
+        border: none;
+        margin: 0 0 var(--spacing-xs, 8px);
+        color: var(--center-channel-color);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
+    &__field {
+        width: 100%;
+
+        .form-control {
+            height: 40px;
+            border-radius: var(--radius-s, 4px);
+        }
+
+        .form-control[aria-invalid='true'] {
+            border-color: var(--error-text);
+        }
+    }
+
+    &__error {
+        display: flex;
+        align-items: center;
+        margin-top: var(--spacing-xs, 8px);
+        color: var(--error-text);
+        font-size: 12px;
+        gap: 4px;
+        line-height: 16px;
+    }
+
+    // The date picker opens in a popper below its field and must not be clipped by the modal body
+    .modal-body {
+        overflow: visible;
+    }
+}

@@ -30891,6 +30891,102 @@
     "defaultMessage": "Scheduled",
     "description": "Tab label next to Drafts for the list of scheduled posts; compact space. 'Scheduled' is an adjective describing posts."
   },
+  "scheduled_leave.modal.autoReply.help": {
+    "defaultMessage": "Reply to direct messages while you are on leave",
+    "description": "Explains the automatic reply toggle."
+  },
+  "scheduled_leave.modal.autoReply.label": {
+    "defaultMessage": "Send an automatic reply",
+    "description": "Toggle that turns on an automatic reply to direct messages during the leave."
+  },
+  "scheduled_leave.modal.autoReply.placeholder": {
+    "defaultMessage": "Leave empty to send a default message",
+    "description": "Placeholder for the automatic reply text; an empty text sends a default reply."
+  },
+  "scheduled_leave.modal.autoReplyMessage.label": {
+    "defaultMessage": "Automatic reply message",
+    "description": "Label for the text of the automatic reply sent during the leave."
+  },
+  "scheduled_leave.modal.backup.label": {
+    "defaultMessage": "Backup contact",
+    "description": "Label for the colleague people should contact while the user is on leave."
+  },
+  "scheduled_leave.modal.backup.placeholder": {
+    "defaultMessage": "Search for a person",
+    "description": "Placeholder in the field for choosing a colleague to contact while the user is on leave."
+  },
+  "scheduled_leave.modal.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Button that closes the leave dialog without saving."
+  },
+  "scheduled_leave.modal.end.label": {
+    "defaultMessage": "Ends",
+    "description": "Label for the date and time the leave ends, when the user is back."
+  },
+  "scheduled_leave.modal.error.autoReplyTooLong": {
+    "defaultMessage": "The automatic reply can be at most 1000 characters.",
+    "description": "Error when the automatic reply is over its 1000-character limit."
+  },
+  "scheduled_leave.modal.error.backupInvalid": {
+    "defaultMessage": "This person doesn't exist or is deactivated. Choose someone else.",
+    "description": "Error when the chosen backup contact is unknown or deactivated."
+  },
+  "scheduled_leave.modal.error.backupNotSelected": {
+    "defaultMessage": "Select a person from the list.",
+    "description": "Error when the user typed a name in the backup contact field without picking a person from the suggestions."
+  },
+  "scheduled_leave.modal.error.backupSelf": {
+    "defaultMessage": "You can't be your own backup contact.",
+    "description": "Error when the user picks themself as their backup contact."
+  },
+  "scheduled_leave.modal.error.endBeforeStart": {
+    "defaultMessage": "The end date must be after the start date.",
+    "description": "Error when the leave ends on or before its start."
+  },
+  "scheduled_leave.modal.error.endInPast": {
+    "defaultMessage": "The end date must be in the future.",
+    "description": "Error when the leave end date has already passed."
+  },
+  "scheduled_leave.modal.error.endRequired": {
+    "defaultMessage": "Choose an end date.",
+    "description": "Error when the leave has no valid end date or time."
+  },
+  "scheduled_leave.modal.error.noteTooLong": {
+    "defaultMessage": "The note can be at most 500 characters.",
+    "description": "Error when the leave note is over its 500-character limit."
+  },
+  "scheduled_leave.modal.error.startRequired": {
+    "defaultMessage": "Choose a start date.",
+    "description": "Error when the leave has no valid start date or time."
+  },
+  "scheduled_leave.modal.error.tooLong": {
+    "defaultMessage": "Leave can last at most 365 days.",
+    "description": "Error when the leave is longer than the 365-day limit."
+  },
+  "scheduled_leave.modal.note.label": {
+    "defaultMessage": "Note",
+    "description": "Label for an optional note about the leave."
+  },
+  "scheduled_leave.modal.note.placeholder": {
+    "defaultMessage": "Add details for people who look you up",
+    "description": "Placeholder for an optional note about the leave, shown to people who view the user's profile."
+  },
+  "scheduled_leave.modal.save": {
+    "defaultMessage": "Save",
+    "description": "Button that saves the scheduled leave."
+  },
+  "scheduled_leave.modal.start.label": {
+    "defaultMessage": "Starts",
+    "description": "Label for the date and time the leave starts."
+  },
+  "scheduled_leave.modal.title.edit": {
+    "defaultMessage": "Edit leave",
+    "description": "Title of the dialog where a user changes a leave (time off) they already scheduled."
+  },
+  "scheduled_leave.modal.title.schedule": {
+    "defaultMessage": "Schedule leave",
+    "description": "Title of the dialog where a user plans an upcoming leave (time off)."
+  },
   "scheduled_post.action.copy_text": {
     "defaultMessage": "Copy text",
     "description": "Tooltip on the copy icon of a scheduled post row; copies the post's text to the clipboard."
@@ -36090,6 +36186,26 @@
   "userAccountMenu.profileMenuItem.label": {
     "defaultMessage": "Profile",
     "description": "Menu item in the user account menu that opens the user's profile settings; noun."
+  },
+  "userAccountMenu.scheduledLeaveMenuItem.onLeaveUntil": {
+    "defaultMessage": "On leave until {date}",
+    "description": "Account menu item shown while a leave is scheduled; {date} is the date the user is back."
+  },
+  "userAccountMenu.scheduledLeaveMenuItem.schedule": {
+    "defaultMessage": "Schedule leave",
+    "description": "Account menu item that opens the dialog to plan a leave (time off)."
+  },
+  "userAccountMenu.scheduledLeaveMenuItem.starts": {
+    "defaultMessage": "Starts {date}",
+    "description": "Second line of the leave menu item for a leave that has not started; {date} is its start date."
+  },
+  "userAccountMenu.scheduledLeaveSubMenuItem.edit": {
+    "defaultMessage": "Edit leave",
+    "description": "Account submenu item that opens the scheduled leave for editing."
+  },
+  "userAccountMenu.scheduledLeaveSubMenuItem.end": {
+    "defaultMessage": "End leave now",
+    "description": "Account submenu item that cancels the scheduled leave right away."
   },
   "userAccountMenu.setCustomStatusMenuItem.clearTooltip": {
     "defaultMessage": "Clear custom status",

@@ -21,6 +21,7 @@ import UserAccountOfflineMenuItem from './user_account_offline_menuitem';
 import UserAccountOnlineMenuItem from './user_account_online_menuitem';
 import UserAccountOutOfOfficeMenuItem from './user_account_out_of_office_menuitem';
 import UserAccountProfileMenuItem from './user_account_profile_menuitem';
+import UserAccountScheduledLeaveMenuItem from './user_account_scheduled_leave_menuitem';
 import UserAccountSetCustomStatusMenuItem from './user_account_set_custom_status_menuitem';
 
 import type {PropsFromRedux} from './index';
@@ -104,6 +105,10 @@ export default function UserAccountMenu(props: Props) {
             {props.isCustomStatusEnabled && (
                 <Menu.Separator/>
             )}
+            <UserAccountScheduledLeaveMenuItem
+                timezone={props.timezone}
+            />
+            <Menu.Separator/>
             <UserAccountOnlineMenuItem
                 userId={props.userId}
                 shouldConfirmBeforeStatusChange={shouldConfirmBeforeStatusChange}
