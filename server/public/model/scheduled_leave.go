@@ -34,37 +34,35 @@ type ScheduledLeave struct {
 // so it is safe to run on stored leave from User.IsValid.
 func (sl *ScheduledLeave) IsValid() *AppError {
 	if sl.StartAt <= 0 {
-		return sl.invalidError("start_at")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.start_at.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	if sl.EndAt <= sl.StartAt {
-		return sl.invalidError("end_at")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.end_at.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	if sl.EndAt-sl.StartAt > ScheduledLeaveMaxDurationMillis {
-		return sl.invalidError("duration")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.duration.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	if sl.Timezone != "" {
 		if _, err := time.LoadLocation(sl.Timezone); err != nil {
-			return sl.invalidError("timezone").Wrap(err)
+			return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.timezone.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest).Wrap(err)
 		}
 	}
 	if sl.BackupUserId != "" && !IsValidId(sl.BackupUserId) {
-		return sl.invalidError("backup_user_id")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.backup_user_id.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	if utf8.RuneCountInString(sl.Note) > ScheduledLeaveNoteMaxRunes {
-		return sl.invalidError("note")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.note.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	if utf8.RuneCountInString(sl.AutoReplyMessage) > ScheduledLeaveAutoReplyMessageMaxRunes {
-		return sl.invalidError("auto_reply_message")
+		return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid.auto_reply_message.app_error", scheduledLeaveErrorParams, "", http.StatusBadRequest)
 	}
 	return nil
 }
 
-func (sl *ScheduledLeave) invalidError(field string) *AppError {
-	return NewAppError("ScheduledLeave.IsValid", "model.scheduled_leave.is_valid."+field+".app_error", map[string]any{
-		"MaxDays":                  ScheduledLeaveMaxDurationMillis / (24 * 60 * 60 * 1000),
-		"NoteMaxRunes":             ScheduledLeaveNoteMaxRunes,
-		"AutoReplyMessageMaxRunes": ScheduledLeaveAutoReplyMessageMaxRunes,
-	}, "", http.StatusBadRequest)
+var scheduledLeaveErrorParams = map[string]any{
+	"MaxDays":                  ScheduledLeaveMaxDurationMillis / (24 * 60 * 60 * 1000),
+	"NoteMaxRunes":             ScheduledLeaveNoteMaxRunes,
+	"AutoReplyMessageMaxRunes": ScheduledLeaveAutoReplyMessageMaxRunes,
 }
 
 // Auditable leaves out Note and AutoReplyMessage, which are free text written by the user.

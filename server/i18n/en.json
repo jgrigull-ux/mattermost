@@ -19670,6 +19670,41 @@
     "description": "API error for admin reporting endpoints when the requested date range value is not one of the supported options; shown to system admins."
   },
   {
+    "id": "model.scheduled_leave.is_valid.auto_reply_message.app_error",
+    "translation": "The automatic reply can't be longer than {{.AutoReplyMessageMaxRunes}} characters.",
+    "description": "Validation error shown when a scheduled leave's automatic reply message (sent to people who message the user while away) is too long; {{.AutoReplyMessageMaxRunes}} is the maximum number of characters."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.backup_user_id.app_error",
+    "translation": "The backup contact is not a valid user ID.",
+    "description": "Validation error shown when a scheduled leave's backup contact (the person covering while the user is away) is not a well-formed user ID."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.duration.app_error",
+    "translation": "Leave can't be longer than {{.MaxDays}} days.",
+    "description": "Validation error shown when a scheduled leave is longer than the maximum; {{.MaxDays}} is the maximum number of days (365)."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.end_at.app_error",
+    "translation": "The leave end date must be after the start date.",
+    "description": "Validation error shown when a scheduled leave's end (return) date is on or before its start date."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.note.app_error",
+    "translation": "The leave note can't be longer than {{.NoteMaxRunes}} characters.",
+    "description": "Validation error shown when a scheduled leave's note is too long; {{.NoteMaxRunes}} is the maximum number of characters."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.start_at.app_error",
+    "translation": "The leave start date is missing or invalid.",
+    "description": "Validation error shown when a scheduled leave (a planned date range when a user is away) has no start date."
+  },
+  {
+    "id": "model.scheduled_leave.is_valid.timezone.app_error",
+    "translation": "The leave timezone is not a valid timezone.",
+    "description": "Validation error shown when a scheduled leave's timezone is not a known IANA timezone name such as America/New_York."
+  },
+  {
     "id": "model.scheduled_post.is_valid.empty_post.app_error",
     "translation": "Cannot schedule an empty post. Scheduled post must have at least a message or file attachments.",
     "description": "API error when trying to schedule a message for later sending that has neither text nor attachments; 'post' is a chat message (noun), 'schedule' is a verb."

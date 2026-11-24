@@ -40,7 +40,9 @@ Do not write product code or tests in this step.
 
 ## Mattermost checklist (add each item that applies as a subtask)
 
-- New `App` methods: run `make app-layers` in `server/` (regenerates `app_iface.go` and the opentracing layer).
+- New `App` methods need no generated layer in this repo version (`make app-layers` and `app_iface.go` are gone);
+  check `server/Makefile` before naming a generator. Store or plugin API changes need `make layers`.
+- Local mode: if admins can act through local mode, plan the routes in `server/channels/api4/<area>_local.go` too.
 - New error ids: add to `server/i18n/en.json` with a translator `description`, then `make i18n-extract`
   (server/AGENTS.md). Never `go mod tidy`; use `make modules-tidy`.
 - New API route: register on `api.BaseRoutes.*` in `server/channels/api4/`, permission check through
