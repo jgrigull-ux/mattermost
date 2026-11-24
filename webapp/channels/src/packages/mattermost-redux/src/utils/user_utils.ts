@@ -3,7 +3,7 @@
 
 import type {ChannelMembership} from '@mattermost/types/channels';
 import type {TeamMembership} from '@mattermost/types/teams';
-import type {UserProfile} from '@mattermost/types/users';
+import type {ScheduledLeave, UserProfile} from '@mattermost/types/users';
 import type {IDMappedObjects} from '@mattermost/types/utilities';
 
 import {localizeMessage} from 'mattermost-redux/utils/i18n_utils';
@@ -250,4 +250,18 @@ export function applyRolesFilters(user: UserProfile, filterRoles: string[], excl
         return false;
     }
     return filterRoles.length === 0 || filterRoles.some(checkUserHasRole.bind(null, user, userIsNotAdminOrGuest, membership));
+}
+
+export const SCHEDULED_LEAVE_UPCOMING_WINDOW = 7 * 24 * 60 * 60 * 1000;
+
+export function parseScheduledLeave(user?: UserProfile): ScheduledLeave | undefined {
+    return undefined;
+}
+
+export function isScheduledLeaveActive(leave: ScheduledLeave | undefined, now: number): boolean {
+    return false;
+}
+
+export function isScheduledLeaveUpcoming(leave: ScheduledLeave | undefined, now: number): boolean {
+    return false;
 }

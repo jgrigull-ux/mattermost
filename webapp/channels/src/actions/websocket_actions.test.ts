@@ -20,7 +20,7 @@ import type {Job, JobStatus} from '@mattermost/types/jobs';
 import type {Post} from '@mattermost/types/posts';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
-import {ChannelTypes, CloudTypes, JobTypes, PostTypes, RenderPermissionTypes, TeamTypes} from 'mattermost-redux/action_types';
+import {ChannelTypes, CloudTypes, JobTypes, PostTypes, RenderPermissionTypes, TeamTypes, UserTypes} from 'mattermost-redux/action_types';
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
 import {getChannelMember} from 'mattermost-redux/actions/channels';
 import {getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
@@ -71,6 +71,7 @@ import {
     handlePostUnreadEvent,
     handleUserAddedEvent,
     handleUserRemovedEvent,
+    handleUserUpdatedEvent,
     handleLeaveTeamEvent,
     reconnect,
     handleAppsPluginEnabled,
@@ -2557,6 +2558,43 @@ describe('channel read access on role changes', () => {
             testStore.dispatch(handleChannelMemberUpdatedEvent(memberUpdated({scheme_admin: true})));
 
             expect(reconcileChannelReadAccess).not.toHaveBeenCalled();
+        });
+    });
+});
+
+describe('handleUserUpdatedEvent', () => {
+    beforeEach(() => {
+        (store.dispatch as jest.Mock).mockClear();
+    });
+
+    test('replaces props with an empty object when the server omits them', async () => {
+        // The server omits empty props, so clearing a user's only prop (such as scheduledLeave) arrives without them.
+        const msg = wsMessage<WebSocketMessages.UserUpdated>({
+            data: {
+                user: {id: 'user', roles: 'system_user'},
+            },
+        });
+
+        await handleUserUpdatedEvent(msg);
+
+        expect(store.dispatch).toHaveBeenCalledWith({
+            type: UserTypes.RECEIVED_PROFILE,
+            data: {id: 'user', roles: 'system_user', props: {}},
+        });
+    });
+
+    test('passes props through when present', async () => {
+        const msg = wsMessage<WebSocketMessages.UserUpdated>({
+            data: {
+                user: {id: 'user', roles: 'system_user', props: {scheduledLeave: '{}'}},
+            },
+        });
+
+        await handleUserUpdatedEvent(msg);
+
+        expect(store.dispatch).toHaveBeenCalledWith({
+            type: UserTypes.RECEIVED_PROFILE,
+            data: {id: 'user', roles: 'system_user', props: {scheduledLeave: '{}'}},
         });
     });
 });
