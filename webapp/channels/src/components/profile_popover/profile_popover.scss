@@ -251,6 +251,17 @@ $profilePopoverBorderWidth: 1px;
                 background: none;
             }
         }
+
+        .user-popover__scheduled-leave {
+            font-size: 14px;
+            white-space: normal;
+
+            .user-popover__scheduled-leave-note {
+                margin: 4px 0 0;
+                color: rgba(var(--center-channel-color-rgb), 0.72);
+                overflow-wrap: anywhere;
+            }
+        }
     }
 
     .user-profile-popover-bottom-row {

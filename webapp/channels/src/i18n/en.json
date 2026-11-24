@@ -30891,6 +30891,18 @@
     "defaultMessage": "Scheduled",
     "description": "Tab label next to Drafts for the list of scheduled posts; compact space. 'Scheduled' is an adjective describing posts."
   },
+  "scheduled_leave.backup": {
+    "defaultMessage": "Backup: {mention}",
+    "description": "Backup contact of a user on scheduled leave; {mention} is an @username that opens their profile."
+  },
+  "scheduled_leave.label.active": {
+    "defaultMessage": "On leave until {date}",
+    "description": "Shown for a user on scheduled leave; {date} is the day they return, for example \"Mon, Dec 8\"."
+  },
+  "scheduled_leave.label.upcoming": {
+    "defaultMessage": "Away from {date}",
+    "description": "Shown for a user whose scheduled leave starts soon; {date} is the start date, for example \"Mon, Dec 8\"."
+  },
   "scheduled_post.action.copy_text": {
     "defaultMessage": "Copy text",
     "description": "Tooltip on the copy icon of a scheduled post row; copies the post's text to the clipboard."
@@ -34070,6 +34082,10 @@
   "user_profile.roleTitle.team_admin": {
     "defaultMessage": "Team Admin",
     "description": "Role badge shown next to the user's name in the profile popover; team-level administrator role name."
+  },
+  "user_profile.scheduled_leave": {
+    "defaultMessage": "Leave",
+    "description": "Heading of the scheduled leave row in the profile popover; \"Leave\" is a noun (time off)."
   },
   "user_profile.send.dm": {
     "defaultMessage": "Message",
