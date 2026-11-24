@@ -9,7 +9,7 @@ import {batchActions} from 'redux-batched-actions';
 import type {UserAutocomplete} from '@mattermost/types/autocomplete';
 import type {Channel} from '@mattermost/types/channels';
 import type {ServerError} from '@mattermost/types/errors';
-import type {UserProfile, UserStatus, GetFilteredUsersStatsOpts, UsersStats, UserCustomStatus, UserAccessToken, UserAuthUpdate} from '@mattermost/types/users';
+import type {UserProfile, UserStatus, GetFilteredUsersStatsOpts, UsersStats, UserCustomStatus, UserAccessToken, UserAuthUpdate, ScheduledLeave} from '@mattermost/types/users';
 
 import {UserTypes, AdminTypes} from 'mattermost-redux/action_types';
 import {logError} from 'mattermost-redux/actions/errors';
@@ -735,6 +735,18 @@ export function unsetCustomStatus() {
     return bindClientFunc({
         clientFunc: Client4.unsetCustomStatus,
     });
+}
+
+export function setScheduledLeave(leave: ScheduledLeave): ActionFuncAsync<ScheduledLeave> {
+    return async () => {
+        return {error: new Error(`not implemented ${leave.start_at}`)};
+    };
+}
+
+export function clearScheduledLeave(): ActionFuncAsync<boolean> {
+    return async () => {
+        return {error: new Error('not implemented')};
+    };
 }
 
 export function removeRecentCustomStatus(customStatus: UserCustomStatus) {

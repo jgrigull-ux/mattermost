@@ -433,6 +433,7 @@ export const ModalIdentifiers = {
     POST_REMINDER_CUSTOM_TIME_PICKER: 'post_reminder_custom_time_picker',
     POST_ATTRIBUTES: 'post_attributes',
     CUSTOM_STATUS: 'custom_status',
+    SCHEDULED_LEAVE: 'scheduled_leave',
     COMMERCIAL_SUPPORT: 'commercial_support',
     NO_INTERNET_CONNECTION: 'no_internet_connection',
     JOIN_CHANNEL_PROMPT: 'join_channel_prompt',

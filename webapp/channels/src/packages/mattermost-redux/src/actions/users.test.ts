@@ -1945,4 +1945,89 @@ describe('Actions.Users', () => {
             expect(store.getState().entities.users.profiles).toEqual({});
         });
     });
+
+    describe('scheduled leave', () => {
+        const me = {
+            ...TestHelper.fakeUserWithId(),
+            props: {customStatus: '{"text":"hi"}'},
+        };
+        const leave = {
+            start_at: 1767225600000,
+            end_at: 1767830400000,
+            timezone: 'America/Los_Angeles',
+            note: 'Family trip',
+            auto_reply_enabled: true,
+            auto_reply_message: 'Back on the 8th',
+        };
+
+        function storeWithMe(props: Record<string, string>) {
+            return configureStore({
+                entities: {
+                    users: {
+                        currentUserId: me.id,
+                        profiles: {[me.id]: {...me, props}},
+                    },
+                },
+            });
+        }
+
+        it('setScheduledLeave saves the leave and stores it on the current user', async () => {
+            const leaveStore = storeWithMe(me.props);
+            const scope = nock(Client4.getBaseRoute()).
+                put(`/users/${me.id}/scheduled_leave`, leave).
+                reply(200, leave);
+
+            const result = await leaveStore.dispatch(Actions.setScheduledLeave(leave));
+
+            expect(scope.isDone()).toBe(true);
+            expect(result).toEqual({data: leave});
+            const props = leaveStore.getState().entities.users.profiles[me.id].props;
+            expect(JSON.parse(props.scheduledLeave)).toEqual(leave);
+            expect(props.customStatus).toBe(me.props.customStatus);
+        });
+
+        it('setScheduledLeave returns the server error and leaves the store unchanged', async () => {
+            const leaveStore = storeWithMe(me.props);
+            nock(Client4.getBaseRoute()).
+                put(`/users/${me.id}/scheduled_leave`).
+                reply(400, {
+                    id: 'model.scheduled_leave.is_valid.end_at.app_error',
+                    message: 'The end date must be after the start date.',
+                    status_code: 400,
+                });
+
+            const result = await leaveStore.dispatch(Actions.setScheduledLeave({...leave, end_at: leave.start_at - 1}));
+
+            expect(result.error).toMatchObject({server_error_id: 'model.scheduled_leave.is_valid.end_at.app_error'});
+            expect(leaveStore.getState().entities.users.profiles[me.id].props).toEqual(me.props);
+        });
+
+        it('clearScheduledLeave deletes the leave and removes it from the current user', async () => {
+            const leaveStore = storeWithMe({...me.props, scheduledLeave: JSON.stringify(leave)});
+            const scope = nock(Client4.getBaseRoute()).
+                delete(`/users/${me.id}/scheduled_leave`).
+                reply(200, OK_RESPONSE);
+
+            const result = await leaveStore.dispatch(Actions.clearScheduledLeave());
+
+            expect(scope.isDone()).toBe(true);
+            expect(result).toEqual({data: true});
+            const props = leaveStore.getState().entities.users.profiles[me.id].props;
+            expect(props).not.toHaveProperty('scheduledLeave');
+            expect(props.customStatus).toBe(me.props.customStatus);
+        });
+
+        it('clearScheduledLeave keeps the leave when the request fails', async () => {
+            const stored = {...me.props, scheduledLeave: JSON.stringify(leave)};
+            const leaveStore = storeWithMe(stored);
+            nock(Client4.getBaseRoute()).
+                delete(`/users/${me.id}/scheduled_leave`).
+                reply(403, {id: 'api.context.permissions.app_error', status_code: 403});
+
+            const result = await leaveStore.dispatch(Actions.clearScheduledLeave());
+
+            expect(result.error).toMatchObject({server_error_id: 'api.context.permissions.app_error'});
+            expect(leaveStore.getState().entities.users.profiles[me.id].props).toEqual(stored);
+        });
+    });
 });
