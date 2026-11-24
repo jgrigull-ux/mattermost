@@ -12,7 +12,8 @@ const DAY = 24 * 60 * 60 * 1000;
 test('shows "On leave until" in the DM header and profile popover and clears live @scheduled_leave', async ({pw}) => {
     const {user, adminClient, team} = await pw.initSetup();
 
-    const onLeaveUser = await adminClient.createUser(await pw.random.user('leave'), '', '');
+    const onLeaveUserInput = await pw.random.user('leave');
+    const onLeaveUser = {...(await adminClient.createUser(onLeaveUserInput, '', '')), password: onLeaveUserInput.password};
     await adminClient.addToTeam(team.id, onLeaveUser.id);
     const backupUser = await adminClient.createUser(await pw.random.user('backup'), '', '');
     await adminClient.addToTeam(team.id, backupUser.id);
